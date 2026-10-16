@@ -42,7 +42,14 @@ En cada producto (WhatsApp, Messenger, Instagram) configura:
 - **Verify token:** el valor de `META_VERIFY_TOKEN` (cualquier texto que tú inventes)
 - **Suscripciones:** `messages` (WhatsApp) y `messages`, `messaging_postbacks` (Messenger e Instagram)
 
-### 4. Base de datos
+### 4. Usuario del bot en el ERP
+1. Crea un rol **"Bot WhatsApp"** con solo el módulo **pedidos**. No uses el rol "vendedor":
+   el ERP limitaría al bot a los clientes de un solo vendedor.
+2. Crea un usuario con ese rol, cambia su contraseña inicial y pon `ERP_USER` / `ERP_PASSWORD`.
+3. Los pedidos quedan a nombre del vendedor asignado a cada cliente. Para clientes sin
+   vendedor, pon en `ERP_VENDEDOR_ID` el empleado que debe recibirlos.
+
+### 5. Base de datos
 Conecta Neon desde Vercel > Storage. Luego, con `DATABASE_URL` en tu entorno:
 
 ```bash
@@ -50,8 +57,21 @@ npm install
 npm run db:migrate
 ```
 
+## Cómo conversa
+
+- En WhatsApp reconoce al cliente por su número (últimos 8 dígitos contra `cliente.telefono`).
+  En Messenger e Instagram le pide NIT y teléfono, y ambos deben ser del mismo cliente.
+- Muestra el catálogo con los precios vigentes del cliente, arma el pedido en libras, enseña
+  el resumen y solo registra en el ERP cuando el cliente confirma ese resumen.
+- Pasa la conversación a un vendedor cuando lo piden, hay un reclamo o no logra resolver.
+  Desde ese momento el bot deja de responder en esa conversación.
+- Claude (`claude-opus-5-5`) interpreta los mensajes; las reglas de precios, crédito y
+  existencias las sigue aplicando el ERP.
+
 ## Desarrollo
 
 ```bash
 npm test
+# Conversar con el bot en la terminal (catálogo de demostración, sin Meta):
+ANTHROPIC_API_KEY=... node scripts/chat.js
 ```
