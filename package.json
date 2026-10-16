@@ -1,0 +1,23 @@
+{
+  "name": "prokarne-bot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bot de ventas de Prokarne para WhatsApp, Instagram y Facebook Messenger",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "db:migrate": "node scripts/migrate.js",
+    "chat": "node scripts/chat.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
+    "@neondatabase/serverless": "^1.2.0",
+    "@vercel/functions": "^3.10.1"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}
